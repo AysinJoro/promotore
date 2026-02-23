@@ -1,0 +1,499 @@
+import React, { useState } from 'react';
+import { BookOpen, Sun, Battery, Zap, Car, CheckSquare, Target, Calculator, Home, AlertCircle } from 'lucide-react';
+
+const App = () => {
+  const [activeTab, setActiveTab] = useState('percorso');
+
+  const tabs = [
+    { id: 'percorso', label: 'Percorso', icon: Target },
+    { id: 'fotovoltaico', label: 'Fotovoltaico', icon: Sun },
+    { id: 'storage', label: 'Storage BESS', icon: Battery },
+    { id: 'carichi', label: 'Nuovi Carichi', icon: Zap },
+    { id: 'test', label: 'Test & Quiz', icon: BookOpen },
+    { id: 'riepilogo', label: 'Checklist', icon: CheckSquare },
+  ];
+
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 flex flex-col md:flex-row">
+      {/* Sidebar */}
+      <aside className="w-full md:w-64 bg-slate-900 text-white shadow-xl flex-shrink-0 flex flex-col">
+        <div className="p-6 bg-slate-950">
+          <h1 className="text-xl font-bold tracking-tight text-emerald-400">ANPTE CUBE</h1>
+          <p className="text-sm text-slate-400 mt-1">Manuale Interattivo Promotore</p>
+        </div>
+        <nav className="flex-1 overflow-y-auto py-4">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`w-full flex items-center gap-3 px-6 py-3 text-left transition-colors duration-200 ${
+                  activeTab === tab.id ? 'bg-emerald-600 text-white border-l-4 border-emerald-400' : 'text-slate-300 hover:bg-slate-800 hover:text-white border-l-4 border-transparent'
+                }`}
+              >
+                <Icon size={20} />
+                <span className="font-medium">{tab.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        <div className="max-w-4xl mx-auto">
+          {activeTab === 'percorso' && <PercorsoView />}
+          {activeTab === 'fotovoltaico' && <FotovoltaicoView />}
+          {activeTab === 'storage' && <StorageView />}
+          {activeTab === 'carichi' && <CarichiView />}
+          {activeTab === 'test' && <TestView />}
+          {activeTab === 'riepilogo' && <RiepilogoView />}
+        </div>
+      </main>
+    </div>
+  );
+};
+
+/* --- VIEWS --- */
+
+const PercorsoView = () => (
+  <div className="space-y-6 animate-fadeIn">
+    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+      <h2 className="text-2xl font-bold text-slate-800 mb-2">Il Percorso Formativo</h2>
+      <p className="text-slate-600 mb-6">Da Aspirante a SKILL 2: le competenze che costruiranno la tua professionalità.</p>
+      
+      <div className="space-y-4">
+        <div className="flex gap-4 p-4 border-l-4 border-slate-300 bg-slate-50 rounded-r-xl">
+          <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-600 flex-shrink-0">01</div>
+          <div>
+            <h3 className="font-bold text-lg text-slate-800">ASPIRANTE (Punto di partenza)</h3>
+            <ul className="mt-2 text-sm text-slate-600 space-y-1 list-disc pl-5">
+              <li>Partecipa all'Info-Webinar di 30 min</li>
+              <li>Comprende la missione e le opportunità</li>
+              <li>Non ha ancora formazione tecnica</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="flex gap-4 p-4 border-l-4 border-emerald-400 bg-emerald-50 rounded-r-xl">
+          <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold flex-shrink-0">02</div>
+          <div>
+            <h3 className="font-bold text-lg text-emerald-800">SKILL 1 - Ambasciatore del Territorio (Scout)</h3>
+            <ul className="mt-2 text-sm text-emerald-700 space-y-1 list-disc pl-5">
+              <li>Sa distinguere FV, BESS, EV</li>
+              <li>Conosce kW vs kWh</li>
+              <li>Sa fare un preventivo base</li>
+              <li>Ha ottenuto il Patentino Mobilità Verde</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="flex gap-4 p-4 border-l-4 border-blue-500 bg-blue-50 rounded-r-xl">
+          <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold flex-shrink-0">03</div>
+          <div>
+            <h3 className="font-bold text-lg text-blue-800">SKILL 2 - Consulente Tecnico-Comm. (Closer)</h3>
+            <ul className="mt-2 text-sm text-blue-700 space-y-1 list-disc pl-5">
+              <li>Sa calcolare il bilancio energetico futuro</li>
+              <li>Usa OpenSolar per configurare 3 stringhe</li>
+              <li>Gestisce il Survey di Cantiere</li>
+              <li>Chiude il contratto con simulatore finanziario</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const FotovoltaicoView = () => {
+  const [mq, setMq] = useState(40);
+  const kwp = (mq * 210) / 1000;
+
+  return (
+    <div className="space-y-6 animate-fadeIn">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <h2 className="text-2xl font-bold text-slate-800 mb-6">Fotovoltaico Base</h2>
+        
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-amber-50 p-4 rounded-xl border border-amber-100">
+            <h3 className="font-bold text-amber-900 mb-3 flex items-center gap-2">
+              <Sun size={18} /> Orientamento (Azimut)
+            </h3>
+            <ul className="text-sm space-y-2 text-amber-800">
+              <li className="flex justify-between border-b border-amber-200 pb-1"><span>SUD (0°)</span> <span className="font-bold">100%</span></li>
+              <li className="flex justify-between border-b border-amber-200 pb-1"><span>SE/SO (±30°)</span> <span className="font-bold">95%</span></li>
+              <li className="flex justify-between border-b border-amber-200 pb-1"><span>EST/OVEST (±90°)</span> <span className="font-bold">80%</span></li>
+              <li className="flex justify-between"><span>NORD (±180°)</span> <span className="font-bold text-red-600">55%</span></li>
+            </ul>
+          </div>
+          <div className="bg-sky-50 p-4 rounded-xl border border-sky-100">
+            <h3 className="font-bold text-sky-900 mb-3">Inclinazione (Tilt)</h3>
+            <ul className="text-sm space-y-2 text-sky-800">
+              <li className="flex justify-between border-b border-sky-200 pb-1"><span>10-20° (Tetti piani)</span> <span className="font-bold">85-90%</span></li>
+              <li className="flex justify-between border-b border-sky-200 pb-1"><span>25-35° (Ottimale IT)</span> <span className="font-bold">98-100%</span></li>
+              <li className="flex justify-between border-b border-sky-200 pb-1"><span>35-45° (Nord IT)</span> <span className="font-bold">95-98%</span></li>
+              <li className="flex justify-between"><span>&gt;50° (Facciate)</span> <span className="font-bold text-amber-600">70-75%</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8">
+          <h3 className="font-bold text-lg mb-4 flex items-center gap-2"><Calculator size={20}/> Calcolatore Potenza (da mq a kWp)</h3>
+          <p className="text-sm text-slate-500 mb-4">Formula: Superficie (m²) × Efficienza (210 W/m²) ÷ 1.000</p>
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="flex-1 w-full">
+              <label className="block text-sm font-medium text-slate-700 mb-1">Superficie Tetto Libera (m²)</label>
+              <input 
+                type="number" 
+                value={mq}
+                onChange={(e) => setMq(e.target.value)}
+                className="w-full border-slate-300 rounded-lg p-3 border focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+              />
+            </div>
+            <div className="flex-shrink-0 text-center p-4 bg-emerald-100 text-emerald-800 rounded-lg w-full sm:w-48">
+              <span className="block text-sm">Potenza Stimata</span>
+              <span className="text-2xl font-bold">{kwp > 0 ? kwp.toFixed(1) : 0} kWp</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="bg-red-50 p-5 rounded-xl border border-red-100">
+            <h4 className="font-bold text-red-800 text-lg mb-2">kW (Potenza)</h4>
+            <p className="text-sm text-red-700">È la "portata del rubinetto": quanta energia puoi erogare in un istante.</p>
+            <p className="text-xs text-red-600 mt-2 font-mono">Es. Piano induzione: 7,2 kW</p>
+          </div>
+          <div className="bg-blue-50 p-5 rounded-xl border border-blue-100">
+            <h4 className="font-bold text-blue-800 text-lg mb-2">kWh (Energia)</h4>
+            <p className="text-sm text-blue-700">È il "volume della tanica": quanta energia consumi/accumuli nel tempo.</p>
+            <p className="text-xs text-blue-600 mt-2 font-mono">Es. Consumo annuo: 3.000 kWh</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const StorageView = () => {
+  const [consumoAnnuo, setConsumoAnnuo] = useState(3000);
+  
+  // Calcolo BESS: (Consumo Annuo / 365) * 45% (notte) / 85% (DoD)
+  const notte = (consumoAnnuo / 365) * 0.45;
+  const batteriaIdeale = notte / 0.85;
+
+  return (
+    <div className="space-y-6 animate-fadeIn">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <h2 className="text-2xl font-bold text-slate-800 mb-6">Storage BESS</h2>
+
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="border-2 border-slate-200 rounded-xl p-5 hover:border-emerald-400 transition-colors">
+            <h3 className="font-bold text-xl mb-2 flex items-center gap-2"><Battery className="text-emerald-500"/> Bassa Tensione (LV)</h3>
+            <ul className="text-sm space-y-2 text-slate-600 mb-4">
+              <li>• 48V DC, 5-15 kWh per modulo</li>
+              <li>• Scalabile fino a ~30 kWh</li>
+            </ul>
+            <div className="bg-slate-50 p-3 rounded-lg text-sm">
+              <p className="font-bold text-emerald-700 mb-1">USA QUANDO:</p>
+              <p>Casa singola, cons. notte &lt;15 kWh, nessuna PDC &gt;5kW</p>
+            </div>
+          </div>
+          <div className="border-2 border-slate-200 rounded-xl p-5 hover:border-red-400 transition-colors">
+            <h3 className="font-bold text-xl mb-2 flex items-center gap-2"><Zap className="text-red-500"/> Alta Tensione (HV)</h3>
+            <ul className="text-sm space-y-2 text-slate-600 mb-4">
+              <li>• 200-800V DC, 10-100 kWh</li>
+              <li>• Architettura modulare</li>
+            </ul>
+            <div className="bg-slate-50 p-3 rounded-lg text-sm">
+              <p className="font-bold text-red-700 mb-1">USA QUANDO:</p>
+              <p>Condomini (AUC), Pompe di calore &gt;5kW, Ricarica auto trifase</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
+          <h3 className="font-bold text-indigo-900 text-lg mb-4 flex items-center gap-2"><Calculator size={20}/> Calcolatore Dimensionamento Accumulo</h3>
+          <p className="text-sm text-indigo-700 mb-4">Calcola la batteria ideale assumendo un consumo notturno del 45% e un DoD (Profondità di scarica) dell'85%.</p>
+          
+          <div className="flex flex-col sm:flex-row gap-6 items-center">
+            <div className="w-full sm:w-1/2">
+              <label className="block text-sm font-medium text-indigo-900 mb-1">Consumo in Bolletta (kWh/anno)</label>
+              <input 
+                type="number" 
+                value={consumoAnnuo}
+                onChange={(e) => setConsumoAnnuo(e.target.value)}
+                className="w-full border-indigo-200 rounded-lg p-3 border focus:ring-indigo-500 outline-none"
+              />
+            </div>
+            <div className="w-full sm:w-1/2 flex flex-col gap-2">
+              <div className="bg-white p-3 rounded-lg flex justify-between items-center shadow-sm">
+                <span className="text-sm text-slate-500">Consumo Notturno Stimato:</span>
+                <span className="font-bold">{notte > 0 ? notte.toFixed(1) : 0} kWh</span>
+              </div>
+              <div className="bg-indigo-600 p-3 rounded-lg flex justify-between items-center text-white shadow-md">
+                <span className="text-sm font-medium">Batteria Minima Suggerita:</span>
+                <span className="text-xl font-bold">{batteriaIdeale > 0 ? batteriaIdeale.toFixed(1) : 0} kWh</span>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 text-xs text-indigo-600 bg-indigo-100 p-2 rounded flex gap-2 items-start">
+            <AlertCircle size={14} className="mt-0.5 flex-shrink-0" />
+            <p>Se è presente una Pompa di Calore che lavora di notte o si carica l'auto elettrica (EV), <strong>aggiungere i consumi specifici</strong> manualmente (vedi sezione Carichi).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const CarichiView = () => {
+  const [base, setBase] = useState(3000);
+  const [hasInduzione, setHasInduzione] = useState(false);
+  const [hasPDC, setHasPDC] = useState(false);
+  const [hasEV, setHasEV] = useState(false);
+
+  const total = Number(base) + (hasInduzione ? 500 : 0) + (hasPDC ? 3000 : 0) + (hasEV ? 2500 : 0);
+
+  return (
+    <div className="space-y-6 animate-fadeIn">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <h2 className="text-2xl font-bold text-slate-800 mb-2">Nuovi Carichi (SKILL 2)</h2>
+        <p className="text-slate-600 mb-6">Calcolo del Fabbisogno Energetico Futuro.</p>
+
+        <div className="space-y-4 mb-8">
+          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="w-full sm:w-1/2">
+              <label className="block text-sm font-bold text-slate-700 mb-1">Consumo Attuale Base (kWh/anno)</label>
+              <input 
+                type="number" 
+                value={base}
+                onChange={(e) => setBase(e.target.value)}
+                className="w-full border-slate-300 rounded-lg p-2 border focus:ring-emerald-500 outline-none"
+              />
+            </div>
+            <div className="text-slate-500 text-sm w-full sm:w-1/2">
+              (Da bolletta. Esclude i nuovi apparecchi)
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-4">
+            <div 
+              onClick={() => setHasInduzione(!hasInduzione)}
+              className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${hasInduzione ? 'border-amber-400 bg-amber-50' : 'border-slate-200 hover:border-amber-200'}`}
+            >
+              <div className="flex justify-between items-start mb-2">
+                <h4 className="font-bold text-slate-800">Piano Induzione</h4>
+                <div className={`w-5 h-5 rounded border ${hasInduzione ? 'bg-amber-500 border-amber-500 flex items-center justify-center' : 'border-slate-300'}`}>
+                  {hasInduzione && <CheckSquare size={14} className="text-white"/>}
+                </div>
+              </div>
+              <p className="text-2xl font-bold text-amber-600 mb-1">+500 <span className="text-sm font-normal text-amber-800">kWh</span></p>
+              <p className="text-xs text-slate-500">Picco 7,2 kW. Ideale con FV a pranzo.</p>
+            </div>
+
+            <div 
+              onClick={() => setHasPDC(!hasPDC)}
+              className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${hasPDC ? 'border-sky-400 bg-sky-50' : 'border-slate-200 hover:border-sky-200'}`}
+            >
+              <div className="flex justify-between items-start mb-2">
+                <h4 className="font-bold text-slate-800">Pompa Calore</h4>
+                <div className={`w-5 h-5 rounded border ${hasPDC ? 'bg-sky-500 border-sky-500 flex items-center justify-center' : 'border-slate-300'}`}>
+                  {hasPDC && <CheckSquare size={14} className="text-white"/>}
+                </div>
+              </div>
+              <p className="text-2xl font-bold text-sky-600 mb-1">+3.000 <span className="text-sm font-normal text-sky-800">kWh</span></p>
+              <p className="text-xs text-slate-500">Spunto 7kW. Richiede spesso Storage HV.</p>
+            </div>
+
+            <div 
+              onClick={() => setHasEV(!hasEV)}
+              className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${hasEV ? 'border-emerald-400 bg-emerald-50' : 'border-slate-200 hover:border-emerald-200'}`}
+            >
+              <div className="flex justify-between items-start mb-2">
+                <h4 className="font-bold text-slate-800">Auto Elettrica</h4>
+                <div className={`w-5 h-5 rounded border ${hasEV ? 'bg-emerald-500 border-emerald-500 flex items-center justify-center' : 'border-slate-300'}`}>
+                  {hasEV && <CheckSquare size={14} className="text-white"/>}
+                </div>
+              </div>
+              <p className="text-2xl font-bold text-emerald-600 mb-1">+2.500 <span className="text-sm font-normal text-emerald-800">kWh</span></p>
+              <p className="text-xs text-slate-500">Basato su 15.000 km/anno. Wallbox 7kW.</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-slate-900 text-white p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center shadow-lg">
+          <div>
+            <h3 className="text-lg text-slate-300 font-medium">Fabbisogno Futuro Totale</h3>
+            <p className="text-sm text-slate-400 mt-1">Impianto consigliato: ~{(total / 1000 * 1.1).toFixed(1)} kWp</p>
+          </div>
+          <div className="text-4xl font-bold text-emerald-400 mt-4 sm:mt-0">
+            {total} <span className="text-xl text-emerald-200 font-normal">kWh/anno</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const QuizAccordion = ({ question, answer, bg }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className={`border rounded-xl mb-3 overflow-hidden ${bg}`}>
+      <button 
+        className="w-full px-5 py-4 text-left font-bold text-slate-800 flex justify-between items-center focus:outline-none"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span>{question}</span>
+        <span className="text-2xl font-normal leading-none ml-4">{isOpen ? '−' : '+'}</span>
+      </button>
+      {isOpen && (
+        <div className="px-5 pb-4 pt-1 text-slate-700 bg-white border-t border-slate-100">
+          {answer}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const TestView = () => (
+  <div className="space-y-8 animate-fadeIn">
+    
+    {/* Caso A */}
+    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+      <div className="flex items-center gap-3 mb-4">
+        <Home className="text-blue-500" size={28}/>
+        <h2 className="text-2xl font-bold text-slate-800">Caso A: L'Abitazione "Energivora"</h2>
+      </div>
+      <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 text-sm">
+        <p><strong>Scenario:</strong> Villetta 140 mq. Tetto 50 mq SUD (inclinazione 28°). PDC 2,5 kW + Piscina (PDC 4 kW). 1 auto in garage. Piano cottura a gas. Consumo attuale: 4.200 kWh/anno. Vuole EV entro 12 mesi.</p>
+      </div>
+
+      <QuizAccordion 
+        bg="bg-blue-50/50 border-blue-100"
+        question="D1: Il tetto è 50 mq orientato a SUD. Che potenza stimi?"
+        answer="Circa 10 kWp. (50 m² × 210 W/m² ÷ 1.000 = 10,5 kWp)"
+      />
+      <QuizAccordion 
+        bg="bg-blue-50/50 border-blue-100"
+        question="D2: Vedi PDC e piscina riscaldata. BESS LV o HV?"
+        answer="HV (Alta Tensione). Lo spunto della PDC (7 kW) e la piscina richiedono picchi elevati erogabili bene dall'HV."
+      />
+      <QuizAccordion 
+        bg="bg-blue-50/50 border-blue-100"
+        question="D3: Calcola il fabbisogno futuro (Attuale + EV + PDC piscina + Induzione)"
+        answer="4.200 (attuale) + 2.500 (EV) + 3.000 (PDC) + 500 (Induzione) = 10.200 kWh/anno. Richiede un impianto da ~10 kWp."
+      />
+    </div>
+
+    {/* Caso B */}
+    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+      <div className="flex items-center gap-3 mb-4">
+        <Target className="text-emerald-500" size={28}/>
+        <h2 className="text-2xl font-bold text-slate-800">Caso B: Il Condominio (AUC)</h2>
+      </div>
+      <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 text-sm">
+        <p><strong>Scenario:</strong> Condominio 12 app. Tetto piano 200 mq. Zero spazio in casa per batterie. Consumo comune 8.000 kWh/anno. 6 condomini interessati all'autoconsumo.</p>
+      </div>
+
+      <QuizAccordion 
+        bg="bg-emerald-50/50 border-emerald-100"
+        question="D1: Non c'è spazio negli appartamenti. Dove metti il BESS?"
+        answer="Locale tecnico comune (solaio/cantina) previa verifica CPI (Certificato Prevenzione Incendi) e nulla osta Vigili del Fuoco per BESS > 5 kWh."
+      />
+      <QuizAccordion 
+        bg="bg-emerald-50/50 border-emerald-100"
+        question="D2: Serve LV o HV per il condominio?"
+        answer="HV (Alta Tensione). Il condominio ha carichi misti, potenze elevate e picchi diversificati. Il sistema LV non è scalabile adeguatamente per questo uso."
+      />
+      <QuizAccordion 
+        bg="bg-emerald-50/50 border-emerald-100"
+        question="D3: Cos'è l'AUC e come lo spieghi?"
+        answer="AUC (Autoconsumo Collettivo): i condomini producono insieme con l'impianto condominiale e condividono virtualmente l'energia prima di immetterla in rete. Si guadagna in proporzione alla quota."
+      />
+    </div>
+  </div>
+);
+
+const RiepilogoView = () => {
+  const numbers = [
+    { val: "210 W/m²", desc: "Efficienza pannello" },
+    { val: "1.200", desc: "Ore sole annue (Toscana)" },
+    { val: "7,2 kW", desc: "Picco induzione" },
+    { val: "+500 kWh", desc: "Consumo annuo induzione" },
+    { val: "2,5 kW", desc: "Assorbimento nom. PDC" },
+    { val: "7 kW", desc: "Spunto avvio PDC (3 sec)" },
+    { val: "+3.000 kWh", desc: "Consumo annuo PDC" },
+    { val: "+2.500 kWh", desc: "Consumo annuo EV" },
+    { val: "7 kW", desc: "Potenza Wallbox Modo 3" },
+    { val: "DoD 80-85%", desc: "Profondità scarica BESS" },
+    { val: "LV < 30 kWh", desc: "Accumulo bassa tensione" },
+    { val: "HV > 30 kWh", desc: "Accumulo alta tensione" },
+  ];
+
+  const [checks, setChecks] = useState(Array(8).fill(false));
+  const toggleCheck = (idx) => {
+    const newChecks = [...checks];
+    newChecks[idx] = !newChecks[idx];
+    setChecks(newChecks);
+  };
+
+  const checklistItems = [
+    "So distinguere FV, BESS, EV e CER/AUC",
+    "Conosco la differenza tra kW e kWh",
+    "So stimare la potenza da superficie m²",
+    "Conosco LV vs HV e quando usarli",
+    "So costruire il bilancio energetico futuro",
+    "Conosco i consumi PDC, EV, Induzione",
+    "So fare il Survey di Cantiere completo",
+    "So usare il Simulatore Finanziario"
+  ];
+
+  return (
+    <div className="space-y-8 animate-fadeIn">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <h2 className="text-2xl font-bold text-slate-800 mb-2">I 12 Numeri a Memoria</h2>
+        <p className="text-slate-600 mb-6">Valori essenziali per rispondere in 30 secondi.</p>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {numbers.map((n, i) => (
+            <div key={i} className="bg-slate-50 border border-slate-200 p-4 rounded-xl text-center hover:bg-emerald-50 hover:border-emerald-200 transition-colors">
+              <div className="text-xl font-bold text-emerald-600 mb-1">{n.val}</div>
+              <div className="text-xs text-slate-600">{n.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-slate-900 text-white p-6 md:p-8 rounded-2xl shadow-lg">
+        <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+          <CheckSquare className="text-emerald-400"/> Sei pronto per il Test?
+        </h2>
+        
+        <div className="space-y-3">
+          {checklistItems.map((item, idx) => (
+            <label key={idx} className="flex items-center gap-4 p-3 rounded-lg hover:bg-slate-800 cursor-pointer border border-transparent hover:border-slate-700 transition-colors">
+              <input 
+                type="checkbox" 
+                className="w-5 h-5 rounded border-slate-500 text-emerald-500 focus:ring-emerald-500 bg-slate-800"
+                checked={checks[idx]}
+                onChange={() => toggleCheck(idx)}
+              />
+              <span className={`text-sm md:text-base ${checks[idx] ? 'text-emerald-300 line-through opacity-70' : 'text-slate-200'}`}>
+                {item}
+              </span>
+            </label>
+          ))}
+        </div>
+        
+        {checks.every(Boolean) && (
+          <div className="mt-8 p-4 bg-emerald-500/20 border border-emerald-500 rounded-xl text-center animate-pulse">
+            <p className="text-emerald-300 font-bold text-lg">🎉 Complimenti! Sei pronto per accedere alla Web App SKILL ANPTE!</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default App;
